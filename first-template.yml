@@ -25,3 +25,6 @@ Resources:
       Tags:
         - Key: Name
           Value: WebServer Security Group
+  SQSQueue:
+    Type: AWS::SQS::Queue
+    DependsOn: WebServerInstance # waits for webserver instance to be created first
