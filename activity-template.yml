@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Connecting a Webserver to security groups and accessing internet in a VPC
+Resources:
+  ActivityVPC:
+    Type: AWS::EC2::VPC
+    Description: VPC definition
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      Tags:
+        - Key: Name
+          Value: ActivityVPC
+  ActivitySubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.0.0/24
+      MapPublicIpOnLaunch: true
+      VpcId: !Ref ActivityVPC
+  ActivityRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref ActivityVPC
+  ActivityInternetGateway:
+    Type: AWS::EC2::InternetGateway
+  ActivityInternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref ActivityVPC
+      InternetGatewayId: !Ref ActivityInternetGateway
+  InternetRoute:
+    Type: AWS::EC2::RouteTable
+    DependsOn:
+      - ActivityInternetGatewayAttachment
+    Properties:
+      RouteTableId: !Ref ActivityRouteTable
+      GatewayId: !Ref ActivityInternetGateway
+      DestinationCidrBlock: 0.0.0.0/0
+  ActivitySubnetRouteTableAssoc:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref ActivityRouteTable
+      SubnetId: !Ref ActivitySubnet
+  ActivityInstance:
+    Type: AWS::EC2::Instance
+    DependsOn:
+      - InternetRoute
+      - ActivitySubnetRouteTableAssoc
+    Properties:
+      InstanceType: t2.micro
+      SubnetId: !Ref ActivitySubnet
+      ImageId: ami-0873b46c45c11058d
+      SecurityGroupIds:
+        - !Ref ActivitySecurityGroup
+  ActivitySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Activity security Group
+      VpcId: !Ref ActivityVpc
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: icmp
+          FromPort: -1
+          ToPort: -1
