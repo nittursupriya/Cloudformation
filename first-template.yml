@@ -1,0 +1,13 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Deploying resources using Cloud Formation
+Resources:
+  WebServerInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0873b46c45c11058d
+      InstanceType: t2.micro
+      Tags:
+        - Key: Name
+          Value: WebServer
+        - Key: Project
+          Value: CloudFormation Step By Step
