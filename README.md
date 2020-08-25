@@ -1,6 +1,7 @@
 # Cloudformation
 Creating Infrastructure as a Code template to deploy resources using cloud formation on AWS
 Activity Template YAML File contains the following code steps:
+Region: Ireland
 Part1:
  1. Define a VPC
  2. Add a subnet to your VPC which maps public IP addresses to the EC2 instances launched inside it.
