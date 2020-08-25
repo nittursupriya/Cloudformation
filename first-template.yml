@@ -6,8 +6,22 @@ Resources:
     Properties:
       ImageId: ami-0873b46c45c11058d
       InstanceType: t2.micro
+      SecurityGroupIds:
+        - Ref: WebServerSecurityGroup
       Tags:
         - Key: Name
           Value: WebServer
         - Key: Project
           Value: CloudFormation Step By Step
+  WebServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for the Webservers
+      SecurityGroupIngress:
+        - IpProtocol: "tcp"
+          FromPort: 80
+          ToPort: 80
+          CidrIp: "0.0.0.0/0"
+      Tags:
+        - Key: Name
+          Value: WebServer Security Group
